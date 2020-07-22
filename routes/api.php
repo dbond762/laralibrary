@@ -17,3 +17,23 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::group([
+
+    'prefix' => 'auth'
+
+], function ($router) {
+
+    Route::post('register', 'AuthController@register');
+    Route::post('login', 'AuthController@login');
+    Route::post('logout', 'AuthController@logout');
+    Route::post('refresh', 'AuthController@refresh');
+    Route::post('me', 'AuthController@me');
+
+});
+
+Route::prefix('/books')->group(function () {
+    Route::get('/', 'Books@index');
+    Route::get('/authors', 'Books@authors');
+    Route::get('/{author_id}/authors', 'Books@bookAuthors');
+});
