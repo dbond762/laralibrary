@@ -19,21 +19,25 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::group([
-
-    'prefix' => 'auth'
-
+    'prefix' => 'auth',
 ], function ($router) {
-
     Route::post('register', 'AuthController@register');
     Route::post('login', 'AuthController@login');
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
-    Route::post('me', 'AuthController@me');
-
+    Route::get('me', 'AuthController@me');
 });
 
 Route::prefix('/books')->group(function () {
     Route::get('/', 'Books@index');
     Route::get('/authors', 'Books@authors');
-    Route::get('/{author_id}/authors', 'Books@bookAuthors');
+    Route::get('/author/{author_id}', 'Books@bookAuthors');
+    Route::group([
+        'middleware' => 'auth:api',
+    ], function () {
+        Route::get('/my', 'Books@my');
+        Route::post('/', 'Books@create');
+        Route::put('/{book_id}', 'Books@edit');
+        Route::delete('/{book_id}', 'Books@delete');
+    });
 });
